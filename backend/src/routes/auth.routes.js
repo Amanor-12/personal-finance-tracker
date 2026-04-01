@@ -1,6 +1,7 @@
 const express = require('express');
 
 const authController = require('../controllers/auth.controller');
+const authenticate = require('../middleware/auth.middleware');
 const validate = require('../middleware/validate.middleware');
 const { hasLengthBetween, isEmail } = require('../utils/validators');
 
@@ -50,5 +51,7 @@ router.post(
   }),
   authController.login
 );
+
+router.get('/me', authenticate, authController.getCurrentUser);
 
 module.exports = router;

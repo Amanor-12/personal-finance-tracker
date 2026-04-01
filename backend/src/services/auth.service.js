@@ -102,7 +102,25 @@ const loginUser = async ({ email, password }) => {
   };
 };
 
+const getCurrentUser = async (userId) => {
+  const result = await pool.query(
+    `
+      SELECT ${publicUserFields}
+      FROM users
+      WHERE id = $1
+    `,
+    [userId]
+  );
+
+  if (result.rowCount === 0) {
+    throw new AppError('User account could not be found.', 404);
+  }
+
+  return result.rows[0];
+};
+
 module.exports = {
+  getCurrentUser,
   registerUser,
   loginUser,
 };

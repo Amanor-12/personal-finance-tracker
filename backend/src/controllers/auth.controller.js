@@ -19,7 +19,16 @@ const login = asyncHandler(async (req, res) => {
   });
 });
 
+const getCurrentUser = asyncHandler(async (req, res) => {
+  const user = await authService.getCurrentUser(req.user.id);
+
+  res.json({
+    user,
+  });
+});
+
 module.exports = {
+  getCurrentUser,
   register,
   login,
 };
