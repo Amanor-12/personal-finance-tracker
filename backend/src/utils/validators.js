@@ -13,4 +13,6 @@ const isEmail = (value) => {
 module.exports = {
   hasLengthBetween,
   isEmail,
+  isCategoryType: (value) => ['income', 'expense'].includes(value),
+  isPositiveInteger: (value) => Number.isInteger(Number(value)) && Number(value) > 0,
 };
