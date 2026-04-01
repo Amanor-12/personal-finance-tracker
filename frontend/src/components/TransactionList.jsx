@@ -13,6 +13,14 @@ export default function TransactionList({ onDelete, onEdit, transactions }) {
 
   return (
     <section className="panel">
+      <div className="panel__header">
+        <div>
+          <p className="eyebrow">Recorded activity</p>
+          <h3>Transaction log</h3>
+        </div>
+        <div className="panel__meta">{transactions.length} entries</div>
+      </div>
+
       <div className="table-list">
         <div className="table-list__head">
           <span>Entry</span>

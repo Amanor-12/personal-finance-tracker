@@ -1,7 +1,7 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 
 import LoadingSpinner from './LoadingSpinner';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../hooks/useAuth.jsx';
 
 export default function ProtectedRoute() {
   const { isAuthenticated, isInitializing } = useAuth();

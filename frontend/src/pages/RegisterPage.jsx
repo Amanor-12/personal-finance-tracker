@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import AlertMessage from '../components/AlertMessage';
 import AuthShell from '../components/AuthShell';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../hooks/useAuth.jsx';
 import { extractErrorMessage, validateAuthForm } from '../utils/validation';
 
 const initialFormState = {

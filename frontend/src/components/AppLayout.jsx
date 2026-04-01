@@ -6,20 +6,20 @@ import Sidebar from './Sidebar';
 
 const pageMeta = {
   '/dashboard': {
-    title: 'Financial command center',
-    description: 'Monitor live cash flow, current budgets, and where your money is moving.',
+    title: 'Dashboard',
+    description: 'Monitor balances, cash flow, category concentration, and monthly budget pressure.',
   },
   '/transactions': {
     title: 'Transactions',
-    description: 'Capture income and expenses quickly with clear, reliable records.',
+    description: 'Capture money movement quickly and keep dashboard totals current without refreshing.',
   },
   '/categories': {
-    title: 'Categories',
-    description: 'Organize every money movement with a clean income and expense taxonomy.',
+    title: 'Category system',
+    description: 'Keep income and expense labels clean so reporting and transaction entry stay intuitive.',
   },
   '/budgets': {
-    title: 'Budgets',
-    description: 'Set monthly guardrails and track how close each category is to its limit.',
+    title: 'Budget control',
+    description: 'Set category limits, monitor utilization, and spot overspend before it compounds.',
   },
 };
 
@@ -34,23 +34,25 @@ export default function AppLayout() {
 
   return (
     <div className="app-shell">
-      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-      <div
-        aria-hidden={!isSidebarOpen}
-        className={`app-shell__overlay ${isSidebarOpen ? 'app-shell__overlay--visible' : ''}`}
-        onClick={() => setIsSidebarOpen(false)}
-      />
-
-      <div className="app-shell__content">
-        <Navbar
-          description={meta.description}
-          onMenuToggle={() => setIsSidebarOpen((currentValue) => !currentValue)}
-          title={meta.title}
+      <div className="app-shell__frame">
+        <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+        <div
+          aria-hidden={!isSidebarOpen}
+          className={`app-shell__overlay ${isSidebarOpen ? 'app-shell__overlay--visible' : ''}`}
+          onClick={() => setIsSidebarOpen(false)}
         />
 
-        <main className="page-shell">
-          <Outlet />
-        </main>
+        <div className="app-shell__content">
+          <Navbar
+            description={meta.description}
+            onMenuToggle={() => setIsSidebarOpen((currentValue) => !currentValue)}
+            title={meta.title}
+          />
+
+          <main className="page-shell">
+            <Outlet />
+          </main>
+        </div>
       </div>
     </div>
   );

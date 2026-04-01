@@ -7,7 +7,7 @@ import ConfirmDialog from '../components/ConfirmDialog';
 import LoadingSpinner from '../components/LoadingSpinner';
 import PageHeader from '../components/PageHeader';
 import StatCard from '../components/StatCard';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../hooks/useAuth.jsx';
 import categoryService from '../services/categoryService';
 import { extractErrorMessage, validateCategoryForm } from '../utils/validation';
 

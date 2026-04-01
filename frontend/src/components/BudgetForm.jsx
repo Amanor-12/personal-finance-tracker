@@ -18,7 +18,13 @@ export default function BudgetForm({
         <div>
           <p className="eyebrow">{isEditing ? 'Edit budget' : 'New budget'}</p>
           <h3>{isEditing ? 'Refine this monthly guardrail' : 'Create a monthly budget target'}</h3>
+          <p>Only expense categories can carry monthly budget limits inside the dashboard.</p>
         </div>
+      </div>
+
+      <div className="form-note">
+        <span>Budget-ready categories</span>
+        <strong className="form-note__value">{categories.length} expense labels available</strong>
       </div>
 
       <form className="form-grid" onSubmit={onSubmit}>

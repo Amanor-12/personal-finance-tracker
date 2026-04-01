@@ -9,6 +9,11 @@ export default function CategoryForm({ formData, isEditing, isSubmitting, onCanc
         </div>
       </div>
 
+      <div className="form-note">
+        <span>Structure tip</span>
+        <strong className="form-note__value">Separate income and expense labels</strong>
+      </div>
+
       <form className="form-grid" onSubmit={onSubmit}>
         <label className="field">
           <span className="field__label">Category name</span>

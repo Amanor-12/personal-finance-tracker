@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import AlertMessage from '../components/AlertMessage';
 import AuthShell from '../components/AuthShell';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../hooks/useAuth.jsx';
 import { extractErrorMessage, validateAuthForm } from '../utils/validation';
 
 const initialFormState = {
@@ -25,6 +25,14 @@ export default function LoginPage() {
       ...currentValue,
       [name]: value,
     }));
+  };
+
+  const handleUseDemo = () => {
+    setFormData({
+      email: 'demo@flowledger.com',
+      password: 'DemoPass123!',
+    });
+    setAlert(null);
   };
 
   const handleSubmit = async (event) => {
@@ -103,10 +111,21 @@ export default function LoginPage() {
         <button className="button button--primary button--full" disabled={isSubmitting} type="submit">
           {isSubmitting ? 'Signing in...' : 'Sign in'}
         </button>
+
+        <div className="demo-card">
+          <div>
+            <span className="demo-card__label">Demo workspace</span>
+            <strong>demo@flowledger.com</strong>
+            <p>Password: DemoPass123!</p>
+          </div>
+          <button className="button button--ghost" onClick={handleUseDemo} type="button">
+            Use demo account
+          </button>
+        </div>
       </form>
 
       <div className="auth-card__aside">
-        <span>Need a demo account? Register in under a minute.</span>
+        <span>Need your own workspace instead?</span>
         <Link to="/register">Register here</Link>
       </div>
     </AuthShell>

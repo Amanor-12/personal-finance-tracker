@@ -19,6 +19,11 @@ export default function TransactionForm({
         </div>
       </div>
 
+      <div className="form-note">
+        <span>Matching categories</span>
+        <strong className="form-note__value">{availableCategories.length} ready</strong>
+      </div>
+
       <form className="form-grid" onSubmit={onSubmit}>
         <label className="field">
           <span className="field__label">Type</span>

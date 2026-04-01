@@ -4,9 +4,8 @@ import AlertMessage from '../components/AlertMessage';
 import DashboardBreakdown from '../components/DashboardBreakdown';
 import DashboardSummary from '../components/DashboardSummary';
 import LoadingSpinner from '../components/LoadingSpinner';
-import PageHeader from '../components/PageHeader';
-import { useAppData } from '../hooks/useAppData';
-import { useAuth } from '../hooks/useAuth';
+import { useAppData } from '../hooks/useAppData.jsx';
+import { useAuth } from '../hooks/useAuth.jsx';
 import dashboardService from '../services/dashboardService';
 import { extractErrorMessage } from '../utils/validation';
 
@@ -42,11 +41,6 @@ export default function DashboardPage() {
   if (!summary) {
     return (
       <div className="stack-xl">
-        <PageHeader
-          eyebrow="Overview"
-          description="A live summary of your current financial position."
-          title="Dashboard"
-        />
         <AlertMessage message={errorMessage} title="Dashboard unavailable" variant="error" />
       </div>
     );
@@ -54,13 +48,13 @@ export default function DashboardPage() {
 
   return (
     <div className="stack-xl">
-      <PageHeader
-        eyebrow="Overview"
-        description="A premium snapshot of your financial position, powered by live PostgreSQL aggregates."
-        title="Dashboard"
-      />
-
-      {errorMessage ? <AlertMessage message={errorMessage} title="Some data could not be refreshed" variant="error" /> : null}
+      {errorMessage ? (
+        <AlertMessage
+          message={errorMessage}
+          title="Some dashboard data could not be refreshed"
+          variant="error"
+        />
+      ) : null}
 
       <DashboardSummary summary={summary} />
       <DashboardBreakdown summary={summary} />

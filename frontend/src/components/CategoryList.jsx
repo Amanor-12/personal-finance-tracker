@@ -8,6 +8,7 @@ function CategoryGroup({ categories, groupLabel, onDelete, onEdit }) {
           <p className="eyebrow">{groupLabel}</p>
           <h3>{groupLabel === 'Income' ? 'Revenue categories' : 'Spending categories'}</h3>
         </div>
+        <div className="panel__meta">{categories.length} labels</div>
       </div>
 
       <div className="stack-md">
@@ -17,7 +18,7 @@ function CategoryGroup({ categories, groupLabel, onDelete, onEdit }) {
               <div>
                 <p className="list-card__title">{category.name}</p>
                 <p className="list-card__subtitle">
-                  {category.transaction_count} transactions • {category.budget_count} budgets
+                  {category.transaction_count} transactions | {category.budget_count} budgets
                 </p>
               </div>
 
