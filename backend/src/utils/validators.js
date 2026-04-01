@@ -15,4 +15,7 @@ module.exports = {
   isEmail,
   isCategoryType: (value) => ['income', 'expense'].includes(value),
   isPositiveInteger: (value) => Number.isInteger(Number(value)) && Number(value) > 0,
+  isPositiveNumber: (value) => !Number.isNaN(Number(value)) && Number(value) > 0,
+  isTransactionType: (value) => ['income', 'expense'].includes(value),
+  isValidDate: (value) => !Number.isNaN(Date.parse(value)),
 };
