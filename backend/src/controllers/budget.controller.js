@@ -9,6 +9,14 @@ const getBudgets = asyncHandler(async (req, res) => {
   });
 });
 
+const getBudget = asyncHandler(async (req, res) => {
+  const budget = await budgetService.getBudgetById(req.user.id, req.params.id);
+
+  res.json({
+    budget,
+  });
+});
+
 const createBudget = asyncHandler(async (req, res) => {
   const budget = await budgetService.createBudget(req.user.id, req.body);
 
@@ -38,6 +46,7 @@ const deleteBudget = asyncHandler(async (req, res) => {
 module.exports = {
   createBudget,
   deleteBudget,
+  getBudget,
   getBudgets,
   updateBudget,
 };

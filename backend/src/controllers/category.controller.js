@@ -9,6 +9,14 @@ const getCategories = asyncHandler(async (req, res) => {
   });
 });
 
+const getCategory = asyncHandler(async (req, res) => {
+  const category = await categoryService.getCategoryById(req.user.id, req.params.id);
+
+  res.json({
+    category,
+  });
+});
+
 const createCategory = asyncHandler(async (req, res) => {
   const category = await categoryService.createCategory(req.user.id, req.body);
 
@@ -39,5 +47,6 @@ module.exports = {
   createCategory,
   deleteCategory,
   getCategories,
+  getCategory,
   updateCategory,
 };

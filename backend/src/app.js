@@ -1,7 +1,6 @@
 const cors = require('cors');
 const express = require('express');
 
-const { clientUrl } = require('./config/env');
 const errorHandler = require('./middleware/error.middleware');
 const authRoutes = require('./routes/auth.routes');
 const budgetRoutes = require('./routes/budget.routes');
@@ -15,7 +14,7 @@ const app = express();
 app.disable('x-powered-by');
 app.use(
   cors({
-    origin: clientUrl,
+    origin: true,
     credentials: true,
   })
 );

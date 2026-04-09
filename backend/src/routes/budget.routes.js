@@ -11,6 +11,20 @@ router.use(authenticate);
 
 router.get('/', budgetController.getBudgets);
 
+router.get(
+  '/:id',
+  validate({
+    params: [
+      {
+        field: 'id',
+        message: 'Budget id must be a positive integer.',
+        validate: isPositiveInteger,
+      },
+    ],
+  }),
+  budgetController.getBudget
+);
+
 router.post(
   '/',
   validate({

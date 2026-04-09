@@ -11,6 +11,20 @@ router.use(authenticate);
 
 router.get('/', categoryController.getCategories);
 
+router.get(
+  '/:id',
+  validate({
+    params: [
+      {
+        field: 'id',
+        message: 'Category id must be a positive integer.',
+        validate: isPositiveInteger,
+      },
+    ],
+  }),
+  categoryController.getCategory
+);
+
 router.post(
   '/',
   validate({
