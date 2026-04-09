@@ -21,6 +21,14 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Personal Finance Tracker API is running.',
+    health: '/api/health',
+    auth: '/api/auth',
+  });
+});
+
 app.use('/api/health', healthRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/budgets', budgetRoutes);
