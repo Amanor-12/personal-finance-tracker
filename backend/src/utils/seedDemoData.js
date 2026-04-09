@@ -33,44 +33,132 @@ const monthDate = (monthOffset, day) => {
 };
 
 const buildTransactions = (categoryIds) => [
-  { categoryId: categoryIds.Salary, type: 'income', amount: 6200, description: 'Monthly salary', transactionDate: monthDate(0, 1) },
-  { categoryId: categoryIds.Freelance, type: 'income', amount: 1450, description: 'Client retainer', transactionDate: monthDate(0, 8) },
-  { categoryId: categoryIds.Housing, type: 'expense', amount: 1800, description: 'Rent payment', transactionDate: monthDate(0, 2) },
-  { categoryId: categoryIds.Food, type: 'expense', amount: 690, description: 'Groceries and dining', transactionDate: monthDate(0, 11) },
-  { categoryId: categoryIds.Transport, type: 'expense', amount: 245, description: 'Transit and rideshare', transactionDate: monthDate(0, 14) },
-  { categoryId: categoryIds.Lifestyle, type: 'expense', amount: 540, description: 'Shopping and personal spend', transactionDate: monthDate(0, 18) },
-  { categoryId: categoryIds.Utilities, type: 'expense', amount: 225, description: 'Utilities bundle', transactionDate: monthDate(0, 21) },
-
-  { categoryId: categoryIds.Salary, type: 'income', amount: 6180, description: 'Monthly salary', transactionDate: monthDate(-1, 1) },
-  { categoryId: categoryIds.Investments, type: 'income', amount: 320, description: 'Dividend payout', transactionDate: monthDate(-1, 9) },
-  { categoryId: categoryIds.Housing, type: 'expense', amount: 1800, description: 'Rent payment', transactionDate: monthDate(-1, 2) },
-  { categoryId: categoryIds.Food, type: 'expense', amount: 610, description: 'Groceries and dining', transactionDate: monthDate(-1, 13) },
-  { categoryId: categoryIds.Lifestyle, type: 'expense', amount: 430, description: 'Lifestyle spend', transactionDate: monthDate(-1, 19) },
-
-  { categoryId: categoryIds.Salary, type: 'income', amount: 6125, description: 'Monthly salary', transactionDate: monthDate(-2, 1) },
-  { categoryId: categoryIds.Freelance, type: 'income', amount: 980, description: 'Project milestone', transactionDate: monthDate(-2, 16) },
-  { categoryId: categoryIds.Housing, type: 'expense', amount: 1790, description: 'Rent payment', transactionDate: monthDate(-2, 2) },
-  { categoryId: categoryIds.Food, type: 'expense', amount: 560, description: 'Groceries and dining', transactionDate: monthDate(-2, 10) },
-  { categoryId: categoryIds.Transport, type: 'expense', amount: 225, description: 'Transit and fuel', transactionDate: monthDate(-2, 14) },
-  { categoryId: categoryIds.Utilities, type: 'expense', amount: 210, description: 'Utilities bundle', transactionDate: monthDate(-2, 23) },
-
-  { categoryId: categoryIds.Salary, type: 'income', amount: 6080, description: 'Monthly salary', transactionDate: monthDate(-3, 1) },
-  { categoryId: categoryIds.Investments, type: 'income', amount: 280, description: 'Dividend payout', transactionDate: monthDate(-3, 20) },
-  { categoryId: categoryIds.Housing, type: 'expense', amount: 1780, description: 'Rent payment', transactionDate: monthDate(-3, 2) },
-  { categoryId: categoryIds.Food, type: 'expense', amount: 600, description: 'Groceries and dining', transactionDate: monthDate(-3, 12) },
-  { categoryId: categoryIds.Lifestyle, type: 'expense', amount: 360, description: 'Subscriptions and leisure', transactionDate: monthDate(-3, 18) },
-
-  { categoryId: categoryIds.Salary, type: 'income', amount: 6050, description: 'Monthly salary', transactionDate: monthDate(-4, 1) },
-  { categoryId: categoryIds.Freelance, type: 'income', amount: 1250, description: 'Consulting invoice', transactionDate: monthDate(-4, 15) },
-  { categoryId: categoryIds.Housing, type: 'expense', amount: 1765, description: 'Rent payment', transactionDate: monthDate(-4, 2) },
-  { categoryId: categoryIds.Food, type: 'expense', amount: 550, description: 'Groceries and dining', transactionDate: monthDate(-4, 11) },
-  { categoryId: categoryIds.Transport, type: 'expense', amount: 210, description: 'Transit and fuel', transactionDate: monthDate(-4, 17) },
-
-  { categoryId: categoryIds.Salary, type: 'income', amount: 6000, description: 'Monthly salary', transactionDate: monthDate(-5, 1) },
-  { categoryId: categoryIds.Investments, type: 'income', amount: 250, description: 'Dividend payout', transactionDate: monthDate(-5, 12) },
-  { categoryId: categoryIds.Housing, type: 'expense', amount: 1750, description: 'Rent payment', transactionDate: monthDate(-5, 2) },
-  { categoryId: categoryIds.Food, type: 'expense', amount: 520, description: 'Groceries and dining', transactionDate: monthDate(-5, 9) },
-  { categoryId: categoryIds.Utilities, type: 'expense', amount: 205, description: 'Utilities bundle', transactionDate: monthDate(-5, 21) },
+  {
+    amount: 6200,
+    categoryId: categoryIds.Salary,
+    description: 'Monthly salary',
+    transactionDate: monthDate(0, 1),
+    type: 'income',
+  },
+  {
+    amount: 1450,
+    categoryId: categoryIds.Freelance,
+    description: 'Client retainer',
+    transactionDate: monthDate(0, 8),
+    type: 'income',
+  },
+  {
+    amount: 1800,
+    categoryId: categoryIds.Housing,
+    description: 'Rent payment',
+    transactionDate: monthDate(0, 2),
+    type: 'expense',
+  },
+  {
+    amount: 690,
+    categoryId: categoryIds.Food,
+    description: 'Groceries and dining',
+    transactionDate: monthDate(0, 11),
+    type: 'expense',
+  },
+  {
+    amount: 245,
+    categoryId: categoryIds.Transport,
+    description: 'Transit and rideshare',
+    transactionDate: monthDate(0, 14),
+    type: 'expense',
+  },
+  {
+    amount: 540,
+    categoryId: categoryIds.Lifestyle,
+    description: 'Shopping and personal spend',
+    transactionDate: monthDate(0, 18),
+    type: 'expense',
+  },
+  {
+    amount: 225,
+    categoryId: categoryIds.Utilities,
+    description: 'Utilities bundle',
+    transactionDate: monthDate(0, 21),
+    type: 'expense',
+  },
+  {
+    amount: 6180,
+    categoryId: categoryIds.Salary,
+    description: 'Monthly salary',
+    transactionDate: monthDate(-1, 1),
+    type: 'income',
+  },
+  {
+    amount: 320,
+    categoryId: categoryIds.Investments,
+    description: 'Dividend payout',
+    transactionDate: monthDate(-1, 9),
+    type: 'income',
+  },
+  {
+    amount: 1800,
+    categoryId: categoryIds.Housing,
+    description: 'Rent payment',
+    transactionDate: monthDate(-1, 2),
+    type: 'expense',
+  },
+  {
+    amount: 610,
+    categoryId: categoryIds.Food,
+    description: 'Groceries and dining',
+    transactionDate: monthDate(-1, 13),
+    type: 'expense',
+  },
+  {
+    amount: 430,
+    categoryId: categoryIds.Lifestyle,
+    description: 'Lifestyle spend',
+    transactionDate: monthDate(-1, 19),
+    type: 'expense',
+  },
+  {
+    amount: 6125,
+    categoryId: categoryIds.Salary,
+    description: 'Monthly salary',
+    transactionDate: monthDate(-2, 1),
+    type: 'income',
+  },
+  {
+    amount: 980,
+    categoryId: categoryIds.Freelance,
+    description: 'Project milestone',
+    transactionDate: monthDate(-2, 16),
+    type: 'income',
+  },
+  {
+    amount: 1790,
+    categoryId: categoryIds.Housing,
+    description: 'Rent payment',
+    transactionDate: monthDate(-2, 2),
+    type: 'expense',
+  },
+  {
+    amount: 560,
+    categoryId: categoryIds.Food,
+    description: 'Groceries and dining',
+    transactionDate: monthDate(-2, 10),
+    type: 'expense',
+  },
+  {
+    amount: 225,
+    categoryId: categoryIds.Transport,
+    description: 'Transit and fuel',
+    transactionDate: monthDate(-2, 14),
+    type: 'expense',
+  },
+  {
+    amount: 210,
+    categoryId: categoryIds.Utilities,
+    description: 'Utilities bundle',
+    transactionDate: monthDate(-2, 23),
+    type: 'expense',
+  },
 ];
 
 const buildBudgets = (categoryIds) => {
@@ -79,11 +167,11 @@ const buildBudgets = (categoryIds) => {
   const year = currentDate.getFullYear();
 
   return [
-    { categoryId: categoryIds.Housing, amountLimit: 1900, month, year },
-    { categoryId: categoryIds.Food, amountLimit: 850, month, year },
-    { categoryId: categoryIds.Transport, amountLimit: 320, month, year },
-    { categoryId: categoryIds.Lifestyle, amountLimit: 500, month, year },
-    { categoryId: categoryIds.Utilities, amountLimit: 260, month, year },
+    { amountLimit: 1900, categoryId: categoryIds.Housing, month, year },
+    { amountLimit: 850, categoryId: categoryIds.Food, month, year },
+    { amountLimit: 320, categoryId: categoryIds.Transport, month, year },
+    { amountLimit: 500, categoryId: categoryIds.Lifestyle, month, year },
+    { amountLimit: 260, categoryId: categoryIds.Utilities, month, year },
   ];
 };
 
@@ -124,7 +212,7 @@ async function seedDemoData() {
 
     const categoriesResult = await client.query(
       `
-        SELECT id, name, type
+        SELECT id, name
         FROM categories
         WHERE user_id = $1
       `,
