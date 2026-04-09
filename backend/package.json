@@ -4,9 +4,12 @@
   "private": true,
   "main": "src/server.js",
   "scripts": {
+    "db:reset-demo": "powershell -ExecutionPolicy Bypass -File scripts/reset-demo-database.ps1",
+    "db:start-local": "powershell -ExecutionPolicy Bypass -File scripts/start-local-postgres.ps1",
     "dev": "nodemon src/server.js",
+    "seed:demo": "node src/utils/seedDemoData.js",
     "start": "node src/server.js",
-    "seed:demo": "node src/utils/seedDemoData.js"
+    "verify": "node scripts/verify.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
