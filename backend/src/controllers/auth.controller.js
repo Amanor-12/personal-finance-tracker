@@ -27,8 +27,15 @@ const getCurrentUser = asyncHandler(async (req, res) => {
   });
 });
 
+const listUsers = asyncHandler(async (req, res) => {
+  const users = await authService.listUsers();
+
+  res.json(users);
+});
+
 module.exports = {
   getCurrentUser,
+  listUsers,
   register,
   login,
 };

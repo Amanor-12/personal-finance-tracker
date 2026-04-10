@@ -44,6 +44,7 @@ const errorHandler = (error, req, res, next) => {
   if (error instanceof AppError) {
     return res.status(error.statusCode).json({
       message: error.message,
+      error: error.message,
       ...(error.details ? { details: error.details } : {}),
     });
   }
@@ -53,6 +54,7 @@ const errorHandler = (error, req, res, next) => {
   if (formattedDatabaseError) {
     return res.status(formattedDatabaseError.statusCode).json({
       message: formattedDatabaseError.message,
+      error: formattedDatabaseError.message,
     });
   }
 
@@ -60,6 +62,7 @@ const errorHandler = (error, req, res, next) => {
 
   return res.status(500).json({
     message: 'Something went wrong. Please try again.',
+    error: 'Something went wrong. Please try again.',
   });
 };
 

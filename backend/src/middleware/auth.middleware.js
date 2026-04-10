@@ -8,6 +8,7 @@ const authenticate = (req, res, next) => {
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({
       message: 'Authentication is required to access this resource.',
+      error: 'Authentication is required to access this resource.',
     });
   }
 
@@ -25,6 +26,7 @@ const authenticate = (req, res, next) => {
   } catch (error) {
     return res.status(401).json({
       message: 'Your session is invalid or has expired. Please sign in again.',
+      error: 'Your session is invalid or has expired. Please sign in again.',
     });
   }
 };

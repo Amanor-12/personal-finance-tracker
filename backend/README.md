@@ -113,6 +113,14 @@ npm run verify
 - `POST /api/auth/login`
 - `GET /api/auth/me`
 
+### Frontend Handshake Compatibility
+
+- `POST /users`
+- `POST /users/login`
+- `GET /users`
+
+These routes mirror the Week 7 React fetch handout. `GET /users` requires the same `Authorization: Bearer <token>` header as the private `/api/*` routes.
+
 ### Categories
 
 - `GET /api/categories`

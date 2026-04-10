@@ -119,8 +119,21 @@ const getCurrentUser = async (userId) => {
   return result.rows[0];
 };
 
+const listUsers = async () => {
+  const result = await pool.query(
+    `
+      SELECT ${publicUserFields}
+      FROM users
+      ORDER BY created_at DESC
+    `
+  );
+
+  return result.rows;
+};
+
 module.exports = {
   getCurrentUser,
+  listUsers,
   registerUser,
   loginUser,
 };

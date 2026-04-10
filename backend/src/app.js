@@ -8,14 +8,16 @@ const categoryRoutes = require('./routes/category.routes');
 const dashboardRoutes = require('./routes/dashboard.routes');
 const healthRoutes = require('./routes/health.routes');
 const transactionRoutes = require('./routes/transaction.routes');
+const usersRoutes = require('./routes/users.routes');
 
 const app = express();
 
 app.disable('x-powered-by');
 app.use(
   cors({
-    origin: true,
-    credentials: true,
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
 app.use(express.json());
@@ -35,9 +37,14 @@ app.use('/api/budgets', budgetRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/transactions', transactionRoutes);
+app.use('/users', usersRoutes);
+app.use('/api/users', usersRoutes);
 
 app.use((req, res) => {
-  res.status(404).json({ message: 'Route not found.' });
+  res.status(404).json({
+    message: 'Route not found.',
+    error: 'Route not found.',
+  });
 });
 
 app.use(errorHandler);

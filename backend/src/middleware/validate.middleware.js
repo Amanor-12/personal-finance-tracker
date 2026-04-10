@@ -49,6 +49,7 @@ const validate = ({ body = [], params = [], query = [] }) => {
     if (errors.length > 0) {
       return res.status(400).json({
         message: 'Please review the highlighted fields and try again.',
+        error: 'Please review the highlighted fields and try again.',
         errors,
       });
     }
