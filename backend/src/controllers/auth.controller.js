@@ -28,7 +28,7 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 });
 
 const listUsers = asyncHandler(async (req, res) => {
-  const users = await authService.listUsers();
+  const users = await authService.listUsers(req.user.id);
 
   res.json(users);
 });

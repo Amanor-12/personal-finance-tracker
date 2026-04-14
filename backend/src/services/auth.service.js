@@ -119,13 +119,14 @@ const getCurrentUser = async (userId) => {
   return result.rows[0];
 };
 
-const listUsers = async () => {
+const listUsers = async (userId) => {
   const result = await pool.query(
     `
       SELECT ${publicUserFields}
       FROM users
-      ORDER BY created_at DESC
-    `
+      WHERE id = $1
+    `,
+    [userId]
   );
 
   return result.rows;

@@ -116,10 +116,19 @@ npm run verify
 ### Frontend Handshake Compatibility
 
 - `POST /users`
+- `POST /users/register`
 - `POST /users/login`
 - `GET /users`
+- `GET /users/me`
 
-These routes mirror the Week 7 React fetch handout. `GET /users` requires the same `Authorization: Bearer <token>` header as the private `/api/*` routes.
+These routes mirror the Week 7 React fetch handout while staying user-safe:
+
+- `POST /users` and `POST /users/register` create an account and return a JWT
+- `POST /users/login` signs in and returns a JWT
+- `GET /users/me` returns the signed-in user profile
+- `GET /users` returns only the signed-in user as a one-item array for compatibility with list-based React examples
+
+All other app data stays behind the same `Authorization: Bearer <token>` protection as the private `/api/*` routes.
 
 ### Categories
 

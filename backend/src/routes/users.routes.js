@@ -33,6 +33,31 @@ router.post(
 );
 
 router.post(
+  '/register',
+  validate({
+    body: [
+      {
+        field: 'name',
+        message: 'Name must be between 2 and 120 characters.',
+        validate: hasLengthBetween(2, 120),
+      },
+      {
+        field: 'email',
+        message: 'Enter a valid email address.',
+        validate: isEmail,
+        sanitize: (value) => value.toLowerCase(),
+      },
+      {
+        field: 'password',
+        message: 'Password must be between 8 and 72 characters.',
+        validate: hasLengthBetween(8, 72),
+      },
+    ],
+  }),
+  authController.register
+);
+
+router.post(
   '/login',
   validate({
     body: [
@@ -52,6 +77,7 @@ router.post(
   authController.login
 );
 
+router.get('/me', authenticate, authController.getCurrentUser);
 router.get('/', authenticate, authController.listUsers);
 
 module.exports = router;
