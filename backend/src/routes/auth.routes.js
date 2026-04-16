@@ -52,6 +52,27 @@ router.post(
   authController.login
 );
 
+router.post('/logout', authController.logout);
 router.get('/me', authenticate, authController.getCurrentUser);
+router.put(
+  '/me',
+  authenticate,
+  validate({
+    body: [
+      {
+        field: 'name',
+        message: 'Name must be between 2 and 120 characters.',
+        validate: hasLengthBetween(2, 120),
+      },
+      {
+        field: 'email',
+        message: 'Enter a valid email address.',
+        validate: isEmail,
+        sanitize: (value) => value.toLowerCase(),
+      },
+    ],
+  }),
+  authController.updateCurrentUser
+);
 
 module.exports = router;

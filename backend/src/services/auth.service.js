@@ -119,6 +119,42 @@ const getCurrentUser = async (userId) => {
   return result.rows[0];
 };
 
+const updateCurrentUser = async (userId, { name, email }) => {
+  const existingUser = await getCurrentUser(userId);
+
+  const duplicateUser = await pool.query(
+    `
+      SELECT id
+      FROM users
+      WHERE email = $1 AND id <> $2
+    `,
+    [email, userId]
+  );
+
+  if (duplicateUser.rowCount > 0) {
+    throw new AppError('An account with that email already exists.', 409);
+  }
+
+  const result = await pool.query(
+    `
+      UPDATE users
+      SET name = $1, email = $2
+      WHERE id = $3
+      RETURNING ${publicUserFields}
+    `,
+    [name, email, userId]
+  );
+
+  if (result.rowCount === 0) {
+    throw new AppError('User account could not be found.', 404);
+  }
+
+  return {
+    ...existingUser,
+    ...result.rows[0],
+  };
+};
+
 const listUsers = async (userId) => {
   const result = await pool.query(
     `
@@ -135,6 +171,7 @@ const listUsers = async (userId) => {
 module.exports = {
   getCurrentUser,
   listUsers,
-  registerUser,
   loginUser,
+  registerUser,
+  updateCurrentUser,
 };
