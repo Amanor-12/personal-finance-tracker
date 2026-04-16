@@ -4,6 +4,7 @@ const express = require('express');
 const errorHandler = require('./middleware/error.middleware');
 const authRoutes = require('./routes/auth.routes');
 const budgetRoutes = require('./routes/budget.routes');
+const cardRoutes = require('./routes/card.routes');
 const categoryRoutes = require('./routes/category.routes');
 const dashboardRoutes = require('./routes/dashboard.routes');
 const healthRoutes = require('./routes/health.routes');
@@ -34,6 +35,7 @@ app.get('/', (req, res) => {
 app.use('/api/health', healthRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/budgets', budgetRoutes);
+app.use('/api/cards', cardRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/transactions', transactionRoutes);

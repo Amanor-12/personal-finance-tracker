@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS cards CASCADE;
 DROP TABLE IF EXISTS budgets CASCADE;
 DROP TABLE IF EXISTS transactions CASCADE;
 DROP TABLE IF EXISTS categories CASCADE;
@@ -57,10 +58,27 @@ CREATE TABLE budgets (
     ON DELETE RESTRICT
 );
 
+CREATE TABLE cards (
+  id BIGSERIAL PRIMARY KEY,
+  user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  nickname VARCHAR(60) NOT NULL,
+  holder_name VARCHAR(120) NOT NULL,
+  brand VARCHAR(40) NOT NULL,
+  last4 CHAR(4) NOT NULL,
+  expiry CHAR(5) NOT NULL,
+  theme VARCHAR(20) NOT NULL DEFAULT 'indigo',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  CONSTRAINT cards_last4_digits CHECK (last4 ~ '^[0-9]{4}$'),
+  CONSTRAINT cards_expiry_format CHECK (expiry ~ '^(0[1-9]|1[0-2])/[0-9]{2}$'),
+  CONSTRAINT cards_theme_check CHECK (theme IN ('indigo', 'emerald', 'sunset'))
+);
+
 CREATE INDEX idx_categories_user_type ON categories (user_id, type);
 CREATE INDEX idx_transactions_user_date ON transactions (user_id, transaction_date DESC);
 CREATE INDEX idx_transactions_user_category ON transactions (user_id, category_id);
 CREATE INDEX idx_budgets_user_period ON budgets (user_id, year DESC, month DESC);
+CREATE INDEX idx_cards_user_created ON cards (user_id, created_at DESC);
 
 CREATE OR REPLACE FUNCTION set_updated_at()
 RETURNS TRIGGER AS $$
@@ -87,5 +105,10 @@ EXECUTE FUNCTION set_updated_at();
 
 CREATE TRIGGER budgets_set_updated_at
 BEFORE UPDATE ON budgets
+FOR EACH ROW
+EXECUTE FUNCTION set_updated_at();
+
+CREATE TRIGGER cards_set_updated_at
+BEFORE UPDATE ON cards
 FOR EACH ROW
 EXECUTE FUNCTION set_updated_at();
