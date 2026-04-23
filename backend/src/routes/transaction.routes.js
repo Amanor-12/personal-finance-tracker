@@ -4,7 +4,9 @@ const transactionController = require('../controllers/transaction.controller');
 const authenticate = require('../middleware/auth.middleware');
 const validate = require('../middleware/validate.middleware');
 const {
+  hasMaxLength,
   hasLengthBetween,
+  isBoolean,
   isPositiveInteger,
   isPositiveNumber,
   isTransactionType,
@@ -51,9 +53,27 @@ router.post(
         validate: isPositiveNumber,
       },
       {
+        field: 'account_id',
+        message: 'Account id must be a positive integer.',
+        validate: isPositiveInteger,
+        optional: true,
+      },
+      {
         field: 'description',
         message: 'Description must be 255 characters or fewer.',
         validate: hasLengthBetween(1, 255),
+        optional: true,
+      },
+      {
+        field: 'notes',
+        message: 'Notes must be 500 characters or fewer.',
+        validate: hasMaxLength(500),
+        optional: true,
+      },
+      {
+        field: 'is_recurring',
+        message: 'Recurring flag must be true or false.',
+        validate: isBoolean,
         optional: true,
       },
       {
@@ -93,9 +113,27 @@ router.put(
         validate: isPositiveNumber,
       },
       {
+        field: 'account_id',
+        message: 'Account id must be a positive integer.',
+        validate: isPositiveInteger,
+        optional: true,
+      },
+      {
         field: 'description',
         message: 'Description must be 255 characters or fewer.',
         validate: hasLengthBetween(1, 255),
+        optional: true,
+      },
+      {
+        field: 'notes',
+        message: 'Notes must be 500 characters or fewer.',
+        validate: hasMaxLength(500),
+        optional: true,
+      },
+      {
+        field: 'is_recurring',
+        message: 'Recurring flag must be true or false.',
+        validate: isBoolean,
         optional: true,
       },
       {
