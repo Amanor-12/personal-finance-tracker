@@ -75,4 +75,24 @@ router.put(
   authController.updateCurrentUser
 );
 
+router.put(
+  '/password',
+  authenticate,
+  validate({
+    body: [
+      {
+        field: 'current_password',
+        message: 'Current password is required.',
+        validate: hasLengthBetween(1, 72),
+      },
+      {
+        field: 'new_password',
+        message: 'New password must be between 8 and 72 characters.',
+        validate: hasLengthBetween(8, 72),
+      },
+    ],
+  }),
+  authController.updatePassword
+);
+
 module.exports = router;

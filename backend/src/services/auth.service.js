@@ -155,6 +155,39 @@ const updateCurrentUser = async (userId, { name, email }) => {
   };
 };
 
+const updateCurrentUserPassword = async (userId, { current_password, new_password }) => {
+  const result = await pool.query(
+    `
+      SELECT id, password_hash
+      FROM users
+      WHERE id = $1
+    `,
+    [userId]
+  );
+
+  if (result.rowCount === 0) {
+    throw new AppError('User account could not be found.', 404);
+  }
+
+  const user = result.rows[0];
+  const isMatch = await bcrypt.compare(current_password, user.password_hash);
+
+  if (!isMatch) {
+    throw new AppError('Current password is incorrect.', 401);
+  }
+
+  const passwordHash = await bcrypt.hash(new_password, 12);
+
+  await pool.query(
+    `
+      UPDATE users
+      SET password_hash = $1
+      WHERE id = $2
+    `,
+    [passwordHash, userId]
+  );
+};
+
 const listUsers = async (userId) => {
   const result = await pool.query(
     `
@@ -174,4 +207,5 @@ module.exports = {
   loginUser,
   registerUser,
   updateCurrentUser,
+  updateCurrentUserPassword,
 };

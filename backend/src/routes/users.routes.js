@@ -78,6 +78,45 @@ router.post(
 );
 
 router.get('/me', authenticate, authController.getCurrentUser);
+router.put(
+  '/me',
+  authenticate,
+  validate({
+    body: [
+      {
+        field: 'name',
+        message: 'Name must be between 2 and 120 characters.',
+        validate: hasLengthBetween(2, 120),
+      },
+      {
+        field: 'email',
+        message: 'Enter a valid email address.',
+        validate: isEmail,
+        sanitize: (value) => value.toLowerCase(),
+      },
+    ],
+  }),
+  authController.updateCurrentUser
+);
+router.put(
+  '/password',
+  authenticate,
+  validate({
+    body: [
+      {
+        field: 'current_password',
+        message: 'Current password is required.',
+        validate: hasLengthBetween(1, 72),
+      },
+      {
+        field: 'new_password',
+        message: 'New password must be between 8 and 72 characters.',
+        validate: hasLengthBetween(8, 72),
+      },
+    ],
+  }),
+  authController.updatePassword
+);
 router.get('/', authenticate, authController.listUsers);
 
 module.exports = router;

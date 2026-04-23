@@ -42,6 +42,14 @@ const updateCurrentUser = asyncHandler(async (req, res) => {
   });
 });
 
+const updatePassword = asyncHandler(async (req, res) => {
+  await authService.updateCurrentUserPassword(req.user.id, req.body);
+
+  res.json({
+    message: 'Password updated successfully.',
+  });
+});
+
 const listUsers = asyncHandler(async (req, res) => {
   const users = await authService.listUsers(req.user.id);
 
@@ -55,4 +63,5 @@ module.exports = {
   logout,
   register,
   updateCurrentUser,
+  updatePassword,
 };

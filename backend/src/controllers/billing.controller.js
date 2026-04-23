@@ -1,0 +1,32 @@
+const billingService = require('../services/billing.service');
+const asyncHandler = require('../utils/asyncHandler');
+
+const getSubscriptionOverview = asyncHandler(async (req, res) => {
+  const billing = await billingService.getSubscriptionOverview(req.user.id);
+
+  res.json({
+    billing,
+  });
+});
+
+const createCheckoutSession = asyncHandler(async (req, res) => {
+  const session = await billingService.createCheckoutSession(req.body, req.user);
+
+  res.status(201).json({
+    session,
+  });
+});
+
+const createPortalSession = asyncHandler(async (req, res) => {
+  const session = await billingService.createPortalSession(req.user);
+
+  res.status(201).json({
+    session,
+  });
+});
+
+module.exports = {
+  createCheckoutSession,
+  createPortalSession,
+  getSubscriptionOverview,
+};
