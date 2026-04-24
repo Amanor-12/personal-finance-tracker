@@ -13,7 +13,7 @@ const plans = [
     price: 0,
     priceLabel: '$0',
     description: 'Manual tracking for a personal workspace.',
-    features: ['Manual accounts', 'Transactions', 'Budgets and goals'],
+    features: ['Up to 2 active accounts', 'Transactions', 'Up to 6 budgets', 'Up to 3 goals'],
   },
   {
     id: 'premium_monthly',
@@ -22,7 +22,7 @@ const plans = [
     price: 8,
     priceLabel: '$8 / month',
     description: 'Advanced money workflows for active users.',
-    features: ['Recurring payments', 'Reports', 'Priority support'],
+    features: ['Recurring payments', 'Reports', 'Unlimited accounts, budgets, and goals', 'Priority support'],
   },
   {
     id: 'premium_annual',
@@ -36,6 +36,69 @@ const plans = [
 ];
 
 const paidSubscriptionStatuses = new Set(['active', 'trialing', 'past_due', 'incomplete', 'unpaid']);
+const planAccessMatrix = {
+  free: {
+    featureAccess: {
+      billingPortal: false,
+      prioritySupport: false,
+      recurringPayments: false,
+      reports: false,
+    },
+    limits: {
+      accounts: 2,
+      budgets: 6,
+      goals: 3,
+    },
+  },
+  premium_annual: {
+    featureAccess: {
+      billingPortal: true,
+      prioritySupport: true,
+      recurringPayments: true,
+      reports: true,
+    },
+    limits: {
+      accounts: null,
+      budgets: null,
+      goals: null,
+    },
+  },
+  premium_monthly: {
+    featureAccess: {
+      billingPortal: true,
+      prioritySupport: true,
+      recurringPayments: true,
+      reports: true,
+    },
+    limits: {
+      accounts: null,
+      budgets: null,
+      goals: null,
+    },
+  },
+};
+const usageQueries = {
+  accounts: `
+    SELECT COUNT(*)::INTEGER AS total
+    FROM accounts
+    WHERE user_id = $1 AND status = 'active'
+  `,
+  budgets: `
+    SELECT COUNT(*)::INTEGER AS total
+    FROM budgets
+    WHERE user_id = $1
+  `,
+  goals: `
+    SELECT COUNT(*)::INTEGER AS total
+    FROM goals
+    WHERE user_id = $1
+  `,
+  recurringPayments: `
+    SELECT COUNT(*)::INTEGER AS total
+    FROM recurring_payments
+    WHERE user_id = $1 AND status = 'active'
+  `,
+};
 
 let billingSchemaPromise;
 let stripeClient;
@@ -117,6 +180,14 @@ const getPlanPriceId = (planId) => {
 
 const getPlanByPriceId = (priceId) =>
   plans.find((plan) => plan.id !== 'free' && getPlanPriceId(plan.id) === priceId) || plans[0];
+
+const getEffectivePlanId = (currentPlanId, subscriptionStatus) => {
+  if (currentPlanId && currentPlanId !== 'free' && paidSubscriptionStatuses.has(subscriptionStatus)) {
+    return currentPlanId;
+  }
+
+  return 'free';
+};
 
 const formatMoney = (amountInCents, currency = 'USD') => {
   const normalizedCurrency = String(currency || 'USD').toUpperCase();
@@ -337,11 +408,44 @@ const listInvoices = async (stripe, customerId) => {
   }));
 };
 
+const getUsageSnapshot = async (userId) => {
+  const results = await Promise.all(
+    Object.entries(usageQueries).map(async ([key, query]) => {
+      const result = await pool.query(query, [userId]);
+      return [key, Number(result.rows[0]?.total) || 0];
+    })
+  );
+
+  return Object.fromEntries(results);
+};
+
+const buildAccessState = async (user) => {
+  const effectivePlanId = getEffectivePlanId(user.current_plan_id, user.subscription_status);
+  const matrix = planAccessMatrix[effectivePlanId] || planAccessMatrix.free;
+  const usage = await getUsageSnapshot(user.id);
+
+  return {
+    currentPlanId: effectivePlanId,
+    featureAccess: matrix.featureAccess,
+    isPremium: effectivePlanId !== 'free',
+    limits: matrix.limits,
+    upgradePlanId: 'premium_monthly',
+    usage,
+  };
+};
+
 const buildOverview = async (stripe, user, customer = null) => {
   const stripeConfig = getStripeConfig();
 
   if (!stripe || !customer) {
+    const access = await buildAccessState({
+      ...user,
+      current_plan_id: 'free',
+      subscription_status: stripeConfig.configured ? 'none' : 'not_configured',
+    });
+
     return {
+      access,
       provider: {
         configured: stripeConfig.configured,
         missing: stripeConfig.missing,
@@ -373,10 +477,16 @@ const buildOverview = async (stripe, user, customer = null) => {
     ? getPlanByPriceId(subscription.items.data[0]?.price?.id)
     : plans[0];
   const invoices = await listInvoices(stripe, customer.id);
+  const access = await buildAccessState({
+    ...user,
+    current_plan_id: currentPlan.id,
+    subscription_status: subscription?.status || 'none',
+  });
 
   await syncSubscriptionRecord(user.id, customer.id, subscription, currentPlan.id);
 
   return {
+    access,
     provider: {
       configured: stripeConfig.configured,
       missing: stripeConfig.missing,
@@ -419,6 +529,11 @@ const getSubscriptionOverview = async (userId) => {
   }
 
   return buildOverview(stripe, user, customer);
+};
+
+const getBillingAccess = async (userId) => {
+  const user = await getBillingUser(userId);
+  return buildAccessState(user);
 };
 
 const createCheckoutSession = async (payload, currentUser) => {
@@ -510,5 +625,6 @@ const createPortalSession = async (currentUser, payload = {}) => {
 module.exports = {
   createCheckoutSession,
   createPortalSession,
+  getBillingAccess,
   getSubscriptionOverview,
 };

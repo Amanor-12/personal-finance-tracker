@@ -2,6 +2,7 @@ const express = require('express');
 
 const recurringController = require('../controllers/recurring.controller');
 const authenticate = require('../middleware/auth.middleware');
+const { requireBillingFeature } = require('../middleware/billing-access.middleware');
 const validate = require('../middleware/validate.middleware');
 const {
   hasLengthBetween,
@@ -16,6 +17,7 @@ const {
 const router = express.Router();
 
 router.use(authenticate);
+router.use(requireBillingFeature('recurringPayments', 'recurring payments'));
 
 const recurringBodyValidation = [
   {

@@ -2,6 +2,7 @@ const express = require('express');
 
 const budgetController = require('../controllers/budget.controller');
 const authenticate = require('../middleware/auth.middleware');
+const { enforcePlanLimit } = require('../middleware/billing-access.middleware');
 const validate = require('../middleware/validate.middleware');
 const { isMonth, isPositiveInteger, isPositiveNumber, isYear } = require('../utils/validators');
 
@@ -27,6 +28,7 @@ router.get(
 
 router.post(
   '/',
+  enforcePlanLimit('budgets'),
   validate({
     body: [
       {

@@ -2,6 +2,7 @@ const express = require('express');
 
 const goalController = require('../controllers/goal.controller');
 const authenticate = require('../middleware/auth.middleware');
+const { enforcePlanLimit } = require('../middleware/billing-access.middleware');
 const validate = require('../middleware/validate.middleware');
 const {
   hasLengthBetween,
@@ -34,6 +35,7 @@ router.get(
 
 router.post(
   '/',
+  enforcePlanLimit('goals'),
   validate({
     body: [
       {
