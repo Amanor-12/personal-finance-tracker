@@ -12,8 +12,10 @@ const dashboardRoutes = require('./routes/dashboard.routes');
 const goalRoutes = require('./routes/goal.routes');
 const healthRoutes = require('./routes/health.routes');
 const recurringRoutes = require('./routes/recurring.routes');
+const reportsRoutes = require('./routes/reports.routes');
 const transactionRoutes = require('./routes/transaction.routes');
 const usersRoutes = require('./routes/users.routes');
+const billingController = require('./controllers/billing.controller');
 
 const app = express();
 
@@ -25,6 +27,7 @@ app.use(
     allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
+app.post('/api/billing/webhook', express.raw({ type: 'application/json' }), billingController.handleWebhook);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -46,6 +49,7 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/goals', goalRoutes);
 app.use('/api/recurring-payments', recurringRoutes);
+app.use('/api/reports', reportsRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/users', usersRoutes);
 app.use('/api/users', usersRoutes);

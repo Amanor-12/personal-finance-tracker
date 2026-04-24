@@ -21,5 +21,7 @@ services:
         sync: false
       - key: LEDGR_STRIPE_PRICE_PREMIUM_ANNUAL
         sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
       - key: STRIPE_MODE
         value: test

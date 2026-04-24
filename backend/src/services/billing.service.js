@@ -107,6 +107,7 @@ const getStripeConfig = () => {
   const secretKey = process.env.STRIPE_SECRET_KEY || '';
   const monthlyPriceId = process.env.LEDGR_STRIPE_PRICE_PREMIUM_MONTHLY || '';
   const annualPriceId = process.env.LEDGR_STRIPE_PRICE_PREMIUM_ANNUAL || '';
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || '';
 
   return {
     annualPriceId,
@@ -119,6 +120,7 @@ const getStripeConfig = () => {
       !annualPriceId ? 'LEDGR_STRIPE_PRICE_PREMIUM_ANNUAL' : null,
     ].filter(Boolean),
     secretKey,
+    webhookSecret,
   };
 };
 
@@ -265,6 +267,32 @@ const getBillingUser = async (userId) => {
   return result.rows[0];
 };
 
+const getBillingUserByCustomerId = async (customerId) => {
+  await ensureBillingSchema();
+
+  const result = await pool.query(
+    `
+      SELECT
+        id,
+        name,
+        email,
+        stripe_customer_id,
+        stripe_subscription_id,
+        subscription_status,
+        current_plan_id,
+        subscription_current_period_end,
+        subscription_cancel_at_period_end,
+        subscription_trial_ends_at
+      FROM users
+      WHERE stripe_customer_id = $1
+      LIMIT 1
+    `,
+    [customerId]
+  );
+
+  return result.rows[0] || null;
+};
+
 const updateCustomerReference = async (userId, customerId) => {
   await pool.query(
     `
@@ -301,6 +329,49 @@ const syncSubscriptionRecord = async (userId, customerId, subscription, currentP
       userId,
     ]
   );
+};
+
+const syncSubscriptionStateForCustomer = async (customerId, subscription) => {
+  if (!customerId) {
+    return null;
+  }
+
+  const user = await getBillingUserByCustomerId(customerId);
+
+  if (!user) {
+    return null;
+  }
+
+  const currentPlanId = getPlanByPriceId(subscription?.items?.data?.[0]?.price?.id)?.id || 'free';
+  await syncSubscriptionRecord(user.id, customerId, subscription, currentPlanId);
+
+  return {
+    customerId,
+    currentPlanId,
+    status: subscription?.status || 'none',
+    userId: user.id,
+  };
+};
+
+const getSessionCustomerId = async (stripe, session) => {
+  if (typeof session.customer === 'string') {
+    return session.customer;
+  }
+
+  if (session.customer?.id) {
+    return session.customer.id;
+  }
+
+  if (session.customer_details?.email) {
+    const customers = await stripe.customers.list({
+      email: session.customer_details.email,
+      limit: 1,
+    });
+
+    return customers.data[0]?.id || null;
+  }
+
+  return null;
 };
 
 const lookupStripeCustomer = async (stripe, user) => {
@@ -536,6 +607,74 @@ const getBillingAccess = async (userId) => {
   return buildAccessState(user);
 };
 
+const handleWebhook = async (rawBody, signatureHeader) => {
+  const stripeConfig = getStripeConfig();
+  const stripe = getStripeClient();
+
+  if (!stripe || !stripeConfig.webhookSecret) {
+    throw new AppError('Stripe webhook signing secret is not configured.', 501, {
+      missing: !stripeConfig.webhookSecret ? ['STRIPE_WEBHOOK_SECRET'] : stripeConfig.missing,
+    });
+  }
+
+  const event = stripe.webhooks.constructEvent(rawBody, signatureHeader, stripeConfig.webhookSecret);
+
+  switch (event.type) {
+    case 'checkout.session.completed': {
+      const session = event.data.object;
+
+      if (session.mode !== 'subscription' || !session.subscription) {
+        break;
+      }
+
+      const customerId = await getSessionCustomerId(stripe, session);
+      const subscriptionId =
+        typeof session.subscription === 'string' ? session.subscription : session.subscription.id;
+
+      if (customerId && subscriptionId) {
+        const subscription = await stripe.subscriptions.retrieve(subscriptionId, {
+          expand: ['items.data.price'],
+        });
+
+        await syncSubscriptionStateForCustomer(customerId, subscription);
+      }
+      break;
+    }
+
+    case 'customer.subscription.created':
+    case 'customer.subscription.updated':
+    case 'customer.subscription.deleted': {
+      const subscription = event.data.object;
+      await syncSubscriptionStateForCustomer(subscription.customer, subscription);
+      break;
+    }
+
+    case 'invoice.paid':
+    case 'invoice.payment_failed': {
+      const invoice = event.data.object;
+
+      if (!invoice.customer || !invoice.subscription) {
+        break;
+      }
+
+      const subscription = await stripe.subscriptions.retrieve(invoice.subscription, {
+        expand: ['items.data.price'],
+      });
+
+      await syncSubscriptionStateForCustomer(invoice.customer, subscription);
+      break;
+    }
+
+    default:
+      break;
+  }
+
+  return {
+    received: true,
+    type: event.type,
+  };
+};
+
 const createCheckoutSession = async (payload, currentUser) => {
   const stripeConfig = getStripeConfig();
   const plan = plans.find((item) => item.id === payload.plan_id);
@@ -627,4 +766,5 @@ module.exports = {
   createPortalSession,
   getBillingAccess,
   getSubscriptionOverview,
+  handleWebhook,
 };

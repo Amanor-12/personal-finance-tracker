@@ -25,8 +25,15 @@ const createPortalSession = asyncHandler(async (req, res) => {
   });
 });
 
+const handleWebhook = asyncHandler(async (req, res) => {
+  const result = await billingService.handleWebhook(req.body, req.headers['stripe-signature']);
+
+  res.json(result);
+});
+
 module.exports = {
   createCheckoutSession,
   createPortalSession,
   getSubscriptionOverview,
+  handleWebhook,
 };
