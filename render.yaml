@@ -9,7 +9,17 @@ services:
     envVars:
       - key: PORT
         value: 5000
+      - key: APP_BASE_URL
+        sync: false
       - key: DATABASE_URL
         sync: false
       - key: JWT_SECRET
         sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: LEDGR_STRIPE_PRICE_PREMIUM_MONTHLY
+        sync: false
+      - key: LEDGR_STRIPE_PRICE_PREMIUM_ANNUAL
+        sync: false
+      - key: STRIPE_MODE
+        value: test
