@@ -18,7 +18,7 @@ const createCheckoutSession = asyncHandler(async (req, res) => {
 });
 
 const createPortalSession = asyncHandler(async (req, res) => {
-  const session = await billingService.createPortalSession(req.user);
+  const session = await billingService.createPortalSession(req.user, req.body);
 
   res.status(201).json({
     session,

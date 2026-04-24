@@ -30,6 +30,18 @@ router.post(
   billingController.createCheckoutSession
 );
 
-router.post('/portal', billingController.createPortalSession);
+router.post(
+  '/portal',
+  validate({
+    body: [
+      {
+        field: 'return_url',
+        message: 'A return URL is required.',
+        validate: hasLengthBetween(1, 500),
+      },
+    ],
+  }),
+  billingController.createPortalSession
+);
 
 module.exports = router;

@@ -14,6 +14,13 @@ CREATE TABLE users (
   name VARCHAR(120) NOT NULL,
   email VARCHAR(255) NOT NULL UNIQUE,
   password_hash VARCHAR(255) NOT NULL,
+  stripe_customer_id VARCHAR(255) NULL,
+  stripe_subscription_id VARCHAR(255) NULL,
+  subscription_status VARCHAR(40) NULL,
+  current_plan_id VARCHAR(80) NULL,
+  subscription_current_period_end TIMESTAMPTZ NULL,
+  subscription_cancel_at_period_end BOOLEAN NOT NULL DEFAULT FALSE,
+  subscription_trial_ends_at TIMESTAMPTZ NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -146,6 +153,7 @@ CREATE INDEX idx_transactions_user_account ON transactions (user_id, account_id)
 CREATE INDEX idx_budgets_user_period ON budgets (user_id, year DESC, month DESC);
 CREATE INDEX idx_cards_user_created ON cards (user_id, created_at DESC);
 CREATE INDEX idx_accounts_user_status ON accounts (user_id, status, created_at DESC);
+CREATE INDEX idx_users_stripe_customer_id ON users (stripe_customer_id);
 CREATE UNIQUE INDEX accounts_one_primary_per_user
 ON accounts (user_id)
 WHERE is_primary = TRUE AND status = 'active';
